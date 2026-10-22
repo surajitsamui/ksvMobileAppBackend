@@ -72,9 +72,5 @@ public class DevoteeController {
         return service.updateStatus(id, request.active());
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        service.delete(id);
-    }
+
 }

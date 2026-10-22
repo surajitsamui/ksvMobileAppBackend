@@ -46,16 +46,4 @@ public class DonationController {
                 devoteeId, financialYear, month);
     }
 
-    // Create a donation, or update the existing month record
-    @PostMapping
-    public ResponseEntity<DonationResponse> saveOrUpdate(
-            @Valid @RequestBody DonationRequest request) {
-
-        DonationResponse response =
-                donationService.saveOrUpdate(request);
-
-        return ResponseEntity.ok(response);
-    }
-
-
 }

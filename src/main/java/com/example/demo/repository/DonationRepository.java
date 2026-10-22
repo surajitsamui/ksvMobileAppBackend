@@ -46,4 +46,13 @@ public interface DonationRepository
             String financialYear, String month);
 
     List<Donation> findByFinancialYear(String financialYear);
+
+    @Query(value = """
+    SELECT EXISTS (
+        SELECT 1
+        FROM donations d
+        WHERE d.devotee_id = :devoteeId
+    )
+    """, nativeQuery = true)
+    boolean hasDonations(@Param("devoteeId") Long devoteeId);
 }

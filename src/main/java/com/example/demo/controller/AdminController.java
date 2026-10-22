@@ -12,6 +12,7 @@ import com.example.demo.service.DevoteeService;
 import com.example.demo.service.DonationService;
 import com.example.demo.service.ExpenseService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,6 +75,13 @@ public class AdminController {
     @PutMapping("/devotees/{id}")
     public Devotee update( @PathVariable Long id, @RequestBody DevoteeRequest request) {
         return service.update(id, request);
+    }
+
+    @DeleteMapping("/devotees/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
+    public void deleteDevotee(@PathVariable Long id) {
+        deleteIfNoDonations(id);
     }
 
     @GetMapping("/donations")
@@ -147,6 +155,32 @@ public class AdminController {
         expenseService.deleteExpense(id);
     }
 
+    @org.springframework.transaction.annotation.Transactional
+    public void deleteIfNoDonations(Long devoteeId) {
+
+        Devotee devotee = devotees.findById(devoteeId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Devotee not found"
+                ));
+
+        boolean hasDonations = donations.hasDonations(devoteeId);
+
+        if (hasDonations) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Cannot delete devotee because donation records exist"
+            );
+        }
+
+        // Find any login account associated with this devotee
+        users.findById(devoteeId)
+                .ifPresent(users::delete);
+
+        // Delete devotee only after checking donations and removing
+        // the associated login account
+        devotees.delete(devotee);
+    }
 }
 
 

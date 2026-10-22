@@ -31,7 +31,6 @@ public class SecurityConfig {
                             "/api-docs/**"
                     ).permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                    .requestMatchers("/api/admin/reports/**").hasRole("ADMIN")
                 .requestMatchers("/api/devotee/**").hasRole("DEVOTEE")
                 .anyRequest().authenticated())
             .addFilterBefore(jwt, UsernamePasswordAuthenticationFilter.class);

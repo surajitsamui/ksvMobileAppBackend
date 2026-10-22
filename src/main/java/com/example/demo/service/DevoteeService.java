@@ -2,6 +2,7 @@ package com.example.demo.service;
 import com.example.demo.dto.DevoteeRequest;
 import com.example.demo.model.Devotee;
 import com.example.demo.repository.DevoteeRepository;
+import com.example.demo.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -144,4 +145,6 @@ public class DevoteeService {
                     "Address cannot exceed 500 characters");
         }
     }
+
+
 }
