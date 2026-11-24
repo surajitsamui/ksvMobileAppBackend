@@ -1,4 +1,3 @@
-
 package com.example.demo.repository;
 
 import com.example.demo.model.Donation;
@@ -17,6 +16,17 @@ public interface DonationRepository
             Long devoteeId,
             String financialYear
     );
+
+    // NEW: Direct method for devotee personal donations lookup
+    List<Donation> findByDevotee_IdAndFinancialYear(
+            Long devoteeId,
+            String financialYear
+    );
+
+    // Alias for findByDevotee_IdAndFinancialYear
+    default List<Donation> findByDevoteeIdAndFinancialYear(Long devoteeId, String financialYear) {
+        return findByDevotee_IdAndFinancialYearOrderByIdAsc(devoteeId, financialYear);
+    }
 
     Optional<Donation> findByDevotee_IdAndFinancialYearAndMonth(
             Long devoteeId,

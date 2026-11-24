@@ -10,7 +10,9 @@ import com.example.demo.service.ReportService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/reports")
@@ -52,5 +54,37 @@ public class ReportController {
     @GetMapping("/master/expenses")
     public List<Expense> expensesMaster() {
         return reportService.getExpensesMaster();
+    }
+
+    // ==========================================
+    // NEW: ADMIN REPORT PUBLISHING ENDPOINTS
+    // ==========================================
+
+    @PostMapping("/publish")
+    public Map<String, Object> publishReport(
+            @RequestParam String financialYear,
+            @RequestParam String month,
+            @RequestParam(defaultValue = "true") boolean published) {
+
+        reportService.setReportPublished(financialYear, month, published);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("financialYear", financialYear);
+        response.put("month", month);
+        response.put("published", published);
+        response.put("message", published ? "Report published for Devotee view." : "Report unpublished.");
+        return response;
+    }
+
+    @GetMapping("/publish-status")
+    public Map<String, Object> getPublishStatus(
+            @RequestParam String financialYear,
+            @RequestParam String month) {
+        boolean isPublished = reportService.isReportPublished(financialYear, month);
+        Map<String, Object> response = new HashMap<>();
+        response.put("financialYear", financialYear);
+        response.put("month", month);
+        response.put("published", isPublished);
+        return response;
     }
 }
